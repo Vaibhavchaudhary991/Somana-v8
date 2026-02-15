@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 // import LoadingMain from "../main/Loading";
-// import { Spinner, useToast } from "@chakra-ui/react";
+import { toast } from "sonner";
 // import AlertBox from "../main/AlertBox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -148,22 +148,12 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
     e.preventDefault();
 
     if (!heading || !description || !tags || !genre) {
-      // toast({
-      //   description: "Please fill all fields",
-      //   status: "error",
-      //   duration: 2000,
-      //   isClosable: true,
-      // });
+      toast.error("Please fill all fields");
       return;
     }
 
     if (featuredImage && featuredImage.type.split("/")[0] !== "image") {
-      // toast({
-      //   description: "Only image files are allowed",
-      //   status: "error",
-      //   duration: 2000,
-      //   isClosable: true,
-      // });
+      toast.error("Only image files are allowed");
       return;
     }
 
@@ -202,13 +192,7 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
       });
 
       const slug = response?.data?.data?.newBlog?.slug;
-      // toast({
-      //   title: "Success",
-      //   description: "Story posted Successfully!",
-      //   status: "success",
-      //   duration: 9000,
-      //   isClosable: true,
-      // });
+      toast.success("Story posted Successfully!");
       router.push(`/story/${slug}`);
 
       // Reset form fields
@@ -220,13 +204,7 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
       setTags("");
       setFileLinks("");
     } catch (error) {
-      // toast({
-      //   title: "Error",
-      //   description: "Error posting story!",
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      // });
+      toast.error("Error posting story!");
       console.error("Error posting Blog:", error);
     } finally {
       setIsLoading(false);
@@ -282,13 +260,13 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
     <div>
       <div className="flex mt-6 mb-2 items-center gap-2">
         {!useAI ? (
-          <Button variant="outline" onClick={handleUseAI}>
+          <Button variant="outline" type="button" onClick={handleUseAI}>
             Use AI
             <Sparkles size={16} weight="bold" />
           </Button>
         ) : (
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={handleNotUseAI}>
+            <Button variant="outline" type="button" onClick={handleNotUseAI}>
               Write without AI
               <PenIcon size={16} weight="bold" />
             </Button>
@@ -319,6 +297,7 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
             <Button
               onClick={handleAISubmit}
               className="ml-auto  text-sm cursor-pointer w-fit text-stone-100 bg-stone-800 rounded-md py-1 px-2 flex items-center gap-1"
+              type="button"
             >
               {aiLoading ? (
                 <p className="ml-auto text-sm cursor-pointer w-fit text-stone-100 bg-stone-800 rounded-md py-1 px-2 flex items-center gap-1">

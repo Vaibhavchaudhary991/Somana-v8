@@ -69,7 +69,7 @@ const Footer = () => {
               >
                 Akarsh Rajput | Founder & CEO
               </a> */}
-              <p>Akarsh Rajput | Founder & CEO Somana Corp.</p>
+              <p>Vaibhav Chaudhary | Founder & CEO Somana Corp.</p>
             </div>
           </div>
 

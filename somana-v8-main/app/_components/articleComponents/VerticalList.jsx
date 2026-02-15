@@ -10,8 +10,12 @@ const lora = Lora({
   display: "swap",
 });
 
-const fetchArticles = async () => {
-  const res = await axios.get("/api/v1/blogs?limit=2");
+const fetchArticles = async ({ queryKey }) => {
+  const [_, genre] = queryKey;
+  const url = genre
+    ? `/api/v1/blogs?limit=2&genre=${genre}`
+    : "/api/v1/blogs?limit=2";
+  const res = await axios.get(url);
   return res?.data?.data?.blogs;
 };
 
@@ -24,9 +28,9 @@ const SkeletonCard = () => (
   </div>
 );
 
-const VerticalList = () => {
+const VerticalList = ({ genre }) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["articles1"],
+    queryKey: ["articles1", genre],
     queryFn: fetchArticles,
   });
 

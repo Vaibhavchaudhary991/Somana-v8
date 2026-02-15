@@ -11,6 +11,17 @@ const s3 = new S3Client({
 });
 
 export async function POST(req) {
+  if (
+    !process.env.AWS_REGION ||
+    !process.env.AWS_ACCESS_KEY_ID ||
+    !process.env.AWS_SECRET_ACCESS_KEY ||
+    !process.env.AWS_S3_BUCKET_NAME
+  ) {
+    return NextResponse.json(
+      { error: "Missing AWS configuration" },
+      { status: 500 }
+    );
+  }
   const formData = await req.formData();
   const file = formData.get("file");
 
@@ -37,7 +48,7 @@ export async function POST(req) {
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(
-      { error: "Failed to upload image" },
+      { error: `Failed to upload image: ${error.message}` },
       { status: 500 }
     );
   }

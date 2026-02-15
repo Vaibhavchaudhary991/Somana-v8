@@ -19,7 +19,7 @@ const About = () => {
         <div>
           <h2 className="text-2xl font-semibold mb-4">Meet the Creator</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Hey, I’m <span className="font-medium">Akarsh Rajput</span>—a
+            Hey, I’m <span className="font-medium">Vaibhav Chaudhary</span>—a
             full-stack developer, creator, and visionary behind Somana. I
             designed, built, and launched this platform independently with the
             mission to give people a voice and a platform to explore, express,

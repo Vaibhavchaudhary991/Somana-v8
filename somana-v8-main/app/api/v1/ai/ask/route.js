@@ -9,14 +9,17 @@ if (!GROQ_API_KEY) {
 export async function POST(request) {
   try {
     const { question } = await request.json();
+    console.log("AI API: Received question:", question);
 
     if (!question) {
+      console.log("AI API: No question provided");
       return NextResponse.json(
         { statusText: "error", message: "Question is required" },
         { status: 400 }
       );
     }
 
+    console.log("AI API: Sending request to Groq...");
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -26,15 +29,17 @@ export async function POST(request) {
           Authorization: `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "llama3-70b-8192", // You can change this to another model Groq supports
+          model: "llama-3.3-70b-versatile", // Updated model
           messages: [{ role: "user", content: question }],
         }),
       }
     );
 
     const data = await response.json();
+    console.log("AI API: Groq response status:", response.status);
 
     if (!response.ok) {
+      console.error("AI API: Groq error:", data);
       return NextResponse.json(
         { statusText: "error", message: "Groq API error", error: data },
         { status: response.status }
@@ -42,6 +47,7 @@ export async function POST(request) {
     }
 
     const answer = data.choices?.[0]?.message?.content || "No response";
+    console.log("AI API: Generated answer length:", answer.length);
 
     return NextResponse.json(
       {
@@ -53,7 +59,7 @@ export async function POST(request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Groq API error:", error);
+    console.error("AI API: Internal server error:", error);
     return NextResponse.json(
       {
         statusText: "error",

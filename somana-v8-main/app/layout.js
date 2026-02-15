@@ -6,6 +6,7 @@ import ReactQueryProvider from "./_components/providers/ReactQueryProvider";
 import Footer from "./_components/main/Footer";
 import Script from "next/script";
 import { UserProvider } from "./_context/UserContext";
+import { Toaster } from "@/components/ui/sonner";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -61,6 +62,7 @@ export default function RootLayout({ children }) {
             </div>
           </UserProvider>
         </ReactQueryProvider>
+        <Toaster />
       </body>
     </html>
   );

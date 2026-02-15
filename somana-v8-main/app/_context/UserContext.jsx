@@ -3,6 +3,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
+// Create axios instance
+const API = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  withCredentials: true, // IMPORTANT: sends cookies
+});
+
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -11,11 +17,15 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("/api/v1/users/me"); // SERVER handles auth
+      const res = await API.get("/api/v1/users/me");
       setUser(res.data.data);
     } catch (err) {
-      console.error("Failed to fetch user", err);
-      setUser(null);
+      // If unauthorized, just set user null (don’t crash app)
+      if (err.response?.status === 401) {
+        setUser(null);
+      } else {
+        console.error("Failed to fetch user:", err);
+      }
     } finally {
       setLoading(false);
     }
@@ -33,3 +43,5 @@ export const UserProvider = ({ children }) => {
 };
 
 export const useUser = () => useContext(UserContext);
+
+

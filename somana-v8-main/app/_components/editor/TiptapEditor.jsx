@@ -71,6 +71,12 @@ const TiptapEditor = ({
     immediatelyRender: false, // Add this line to fix SSR hydration
   });
 
+  React.useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
+
   const setLink = React.useCallback(() => {
     const previousUrl = editor?.getAttributes("link").href;
     const url = window.prompt("URL", previousUrl);
