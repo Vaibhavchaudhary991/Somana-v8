@@ -49,26 +49,26 @@ const MusicHorizontalList = () => {
                 title={track.musicName}
                 trackId={track.id}
                 trigger={
-                  <div className="flex items-center gap-4 cursor-pointer">
-                    <div className="min-w-[72px] min-h-[72px] w-16 h-16 relative overflow-hidden rounded ">
+                  <div className="flex items-center gap-4 cursor-pointer group">
+                    <div className="min-w-[72px] min-h-[72px] w-16 h-16 relative overflow-hidden rounded-lg bg-muted group-hover:shadow-lg transition-all duration-300">
                       <img
                         src={track.featuredImage}
                         alt={track.musicName}
-                        className="object-cover rounded w-full h-full"
+                        className="object-cover rounded-lg w-full h-full group-hover:scale-110 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 flex items-center justify-center ">
-                        <PlayCircle size={20} fill="black" color="white" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+                        <PlayCircle size={24} className="text-white drop-shadow-md group-hover:scale-110 transition-transform" />
                       </div>
                     </div>
 
-                    <div className="flex flex-col justify-center overflow-hidden">
-                      <div className="flex gap-2">
-                        <p className="text-xs  px-2 rounded-sm border border-neutral-300 dark:border-neutral-600 w-fit text-neutral-700 dark:text-neutral-300">
+                    <div className="flex flex-col justify-center overflow-hidden flex-1">
+                      <div className="flex gap-2 mb-1">
+                        <p className="text-[10px] uppercase tracking-wider font-bold text-primary border border-primary/20 bg-primary/5 px-1.5 py-0.5 rounded">
                           {track.musicType}
                         </p>
                       </div>
                       <p
-                        className={`${lora.className} text-sm font-medium text-black dark:text-white mt-1 line-clamp-2`}
+                        className={`${lora.className} text-sm font-medium text-foreground mt-1 line-clamp-2 group-hover:text-primary transition-colors`}
                       >
                         {track.musicName}
                       </p>

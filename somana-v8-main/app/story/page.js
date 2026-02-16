@@ -1,11 +1,15 @@
 import VerticalList from "../_components/articleComponents/VerticalList";
 import BestArticle from "../_components/articleComponents/BestArticle";
 import TrendingList from "../_components/articleComponents/TrendingList";
+import TagSlider from "../_components/main/TagSlider";
 
 export default function StoryPage() {
   return (
     <div className="flex flex-col items-center my-4">
       <div className="w-full max-w-[1200px] px-2">
+        <div className="mb-8">
+          <TagSlider />
+        </div>
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Left Column: Today Pick */}

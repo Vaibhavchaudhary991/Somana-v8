@@ -23,13 +23,13 @@ const lora = Lora({
 
 // Skeleton loader
 const SkeletonCard = () => (
-  <div className="bg-white overflow-hidden animate-pulse">
-    <div className="relative h-32 bg-gray-300 dark:bg-neutral-800 rounded" />
+  <div className="bg-transparent overflow-hidden animate-pulse">
+    <div className="relative h-32 bg-muted rounded" />
     <div className="mt-2">
-      <div className="h-5 w-20 bg-gray-300 dark:bg-neutral-700 rounded mb-2" />
-      <div className="h-6 w-3/4 bg-gray-300 dark:bg-neutral-700 rounded mb-3" />
-      <div className="h-5 w-full bg-gray-300 dark:bg-neutral-700 rounded mb-2" />
-      <div className="h-5 w-5/6 bg-gray-300 dark:bg-neutral-700 rounded" />
+      <div className="h-5 w-20 bg-muted rounded mb-2" />
+      <div className="h-6 w-3/4 bg-muted rounded mb-3" />
+      <div className="h-5 w-full bg-muted rounded mb-2" />
+      <div className="h-5 w-5/6 bg-muted rounded" />
     </div>
   </div>
 );
@@ -100,7 +100,7 @@ const ArticleGrid2 = ({ topic }) => {
               <Link
                 href={`/story/${post.slug}`}
                 key={post._id}
-                className="bg-white overflow-hidden"
+                className="bg-transparent overflow-hidden"
               >
                 <div className="relative h-32 bg-neutral-100 dark:bg-neutral-800">
                   <img
@@ -118,12 +118,12 @@ const ArticleGrid2 = ({ topic }) => {
                   </p>
                 </div>
                 <p
-                  className={`${lora.className} text-black font-medium mt-1 line-clamp-2`}
+                  className={`${lora.className} text-foreground font-medium mt-1 line-clamp-2`}
                 >
                   {post.heading}
                 </p>
                 <p
-                  className={`${lora.className} text-black text-sm line-clamp-2 font-medium mt-2`}
+                  className={`${lora.className} text-muted-foreground text-sm line-clamp-2 font-medium mt-2`}
                 >
                   {post.description}
                 </p>

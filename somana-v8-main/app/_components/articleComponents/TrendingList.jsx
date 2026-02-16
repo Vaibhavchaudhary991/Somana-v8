@@ -21,14 +21,14 @@ const fetchArticles = async ({ queryKey }) => {
 
 // Skeleton Loader
 const SkeletonCard = () => (
-  <div className="flex items-center gap-4 animate-pulse bg-white">
+  <div className="flex items-center gap-4 animate-pulse bg-card rounded-lg p-2">
     {/* Skeleton Image */}
-    <div className="min-w-[72px] min-h-[72px] w-16 h-16 bg-gray-300 rounded" />
+    <div className="min-w-[72px] min-h-[72px] w-16 h-16 bg-muted rounded" />
 
     {/* Skeleton Text */}
     <div className="flex flex-col gap-2 flex-1">
-      <div className="w-16 h-4 bg-gray-300 rounded" />
-      <div className="w-3/4 h-5 bg-gray-300 rounded" />
+      <div className="w-16 h-4 bg-muted rounded" />
+      <div className="w-3/4 h-5 bg-muted rounded" />
     </div>
   </div>
 );
@@ -41,36 +41,33 @@ const TrendingList = ({ genre }) => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col gap-6 w-full">
+      <div className="flex flex-col gap-4 w-full">
         {isLoading
           ? [1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)
           : data?.map((post) => (
               <Link
                 href={`/story/${post.slug}`}
                 key={post._id}
-                className="flex items-center gap-4 transition bg-white"
+                className="flex items-center gap-4 transition-all duration-300 bg-card/50 hover:bg-card p-2 rounded-xl border border-transparent hover:border-white/5 hover:shadow-lg group"
               >
                 {/* Image Section */}
-                <div className="min-w-[72px] min-h-[72px] w-16 h-16 relative overflow-hidden rounded bg-neutral-100 dark:bg-neutral-800">
+                <div className="min-w-[72px] min-h-[72px] w-16 h-16 relative overflow-hidden rounded-lg bg-muted">
                   <img
                     src={post.featuredImage}
                     alt={post.heading}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
 
                 {/* Text Section */}
-                <div className="flex flex-col justify-center overflow-hidden">
-                  <div className="flex gap-2">
-                    <p className="text-xs bg-gray-100 px-2 rounded-sm border border-neutral-300 dark:border-neutral-600 w-fit text-neutral-700 dark:text-neutral-300">
+                <div className="flex flex-col justify-center overflow-hidden flex-1">
+                  <div className="flex gap-2 mb-1">
+                    <p className="text-[10px] uppercase tracking-wider font-semibold text-primary">
                       {post.genre}
-                    </p>
-                    <p className="text-xs px-2 rounded-sm border border-neutral-300 dark:border-neutral-600 w-fit text-neutral-700 dark:text-neutral-300">
-                      {post.tags}
                     </p>
                   </div>
                   <p
-                    className={`${lora.className} text-sm font-medium text-black dark:text-white mt-1 line-clamp-2`}
+                    className={`${lora.className} text-sm font-medium text-foreground line-clamp-2 group-hover:text-primary transition-colors`}
                   >
                     {post.heading}
                   </p>

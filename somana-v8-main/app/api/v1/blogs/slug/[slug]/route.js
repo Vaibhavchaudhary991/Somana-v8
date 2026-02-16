@@ -2,11 +2,11 @@ import connectMongoDB from "@/app/_lib/mongodb";
 import Blog from "@/app/_models/blogModel";
 import { NextResponse } from "next/server";
 
-export async function GET(request) {
+export async function GET(request, { params }) {
   try {
     await connectMongoDB();
+    const { slug } = await params;
     const url = new URL(request.url);
-    const slug = url.pathname.split("blogs/slug/")[1];
     const userId = url.searchParams.get("userId");
     const action = url.searchParams.get("action");
 

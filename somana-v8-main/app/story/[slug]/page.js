@@ -23,24 +23,20 @@ const crimsonText = Roboto_Slab({
   display: "swap",
 });
 
+import connectMongoDB from "@/app/_lib/mongodb";
+import Blog from "@/app/_models/blogModel";
+
 const fetchBlogData = async (slug) => {
   if (!slug) return null;
 
   try {
-    const baseUrl =
-      process.env.HOSTNAME ||
-      process.env.NEXT_PUBLIC_HOSTNAME ||
-      "http://localhost:3000";
-    const apiUrl = `${baseUrl}/api/v1/blogs/slug/${slug}`;
-    const res = await fetch(apiUrl, { cache: "no-store" });
+    await connectMongoDB();
+    const blog = await Blog.findOne({ slug: slug }).lean();
+    
+    if (!blog) return null;
 
-    if (!res.ok) {
-      console.error("Fetch failed:", res.status, res.statusText);
-      return null;
-    }
-
-    const json = await res.json();
-    return json?.data || null;
+    // Serialize MongoDB object to plain JSON to avoid Next.js serialization warnings
+    return JSON.parse(JSON.stringify(blog));
   } catch (error) {
     console.error("Error fetching blog:", error);
     return null;

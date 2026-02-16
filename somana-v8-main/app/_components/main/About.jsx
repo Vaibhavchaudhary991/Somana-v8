@@ -35,7 +35,7 @@ const About = () => {
         <div className="flex justify-center">
           <Image
             src="/images/creator-avatar.jpg" // replace with your image path
-            alt="Akarsh Rajput"
+            alt="Vaibhav Chaudhary"
             width={250}
             height={250}
             className="rounded-2xl shadow-lg object-cover"

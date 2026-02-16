@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "./_components/main/Header";
 import ReactQueryProvider from "./_components/providers/ReactQueryProvider";
+import ThemeProvider from "./_components/providers/ThemeProvider";
 import Footer from "./_components/main/Footer";
 import Script from "next/script";
 import { UserProvider } from "./_context/UserContext";
@@ -21,7 +22,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Google Analytics */}
         <Script
@@ -51,18 +52,20 @@ export default function RootLayout({ children }) {
       </head>
 
       <body className={`${dmSans.className} antialiased`}>
-        <ReactQueryProvider>
-          <UserProvider>
-            <div className="flex min-h-screen flex-col">
-              <div className="sticky top-0 left-0 w-full z-50">
-                <Header />
+        <ThemeProvider>
+          <ReactQueryProvider>
+            <UserProvider>
+              <div className="flex min-h-screen flex-col">
+                <div className="sticky top-0 left-0 w-full z-50">
+                  <Header />
+                </div>
+                <main className="flex-1">{children}</main>
+                <Footer />
               </div>
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-          </UserProvider>
-        </ReactQueryProvider>
-        <Toaster />
+            </UserProvider>
+          </ReactQueryProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

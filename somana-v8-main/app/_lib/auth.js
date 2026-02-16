@@ -39,7 +39,7 @@ const authConfig = {
     async session({ session }) {
       const guest = await getUser(session.user.email);
       if (guest) {
-        session.user.userId = guest._id;
+        session.user.userId = guest._id.toString();
         session.user.photo = guest.photo;
         session.user.role = guest.role;
       }

@@ -53,7 +53,7 @@ const DeleteButton = ({ blogId }) => {
     <div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="sm">
+          <Button variant="destructive" size="sm" className="transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md transform">
             Delete <Trash weight="bold" />
           </Button>
         </AlertDialogTrigger>
@@ -70,6 +70,7 @@ const DeleteButton = ({ blogId }) => {
               variant="destructive"
               disabled={isLoading}
               onClick={handleDelete}
+              className="transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md transform"
             >
               {isLoading ? (
                 <p>Deleting</p>

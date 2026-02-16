@@ -1,7 +1,13 @@
-import WriteBlog from "@/app/_components/articleComponents/WriteBlog";
+import dynamic from 'next/dynamic';
+import EditorSkeleton from "@/app/_components/editor/EditorSkeleton";
 import Warning from "@/app/_components/main/Warning";
 import { auth } from "@/app/_lib/auth";
 import React from "react";
+
+// Lazy load WriteBlog component (contains heavy Tiptap editor)
+const WriteBlog = dynamic(() => import("@/app/_components/articleComponents/WriteBlog"), {
+  loading: () => <EditorSkeleton />
+});
 
 const page = async () => {
   const session = await auth();

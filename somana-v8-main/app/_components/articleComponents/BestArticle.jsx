@@ -47,20 +47,22 @@ const BestArticle = ({ genre }) => {
             <Link
               href={`/story/${post.slug}`}
               key={post._id}
-              className="bg-white overflow-hidden"
+              className="bg-card w-full h-full block overflow-hidden rounded-xl group relative"
             >
-              <p
-                className={`${lora.className} text-black text-center text-3xl font-medium mb-2`}
+              <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6 flex flex-col justify-end h-full">
+                 <p
+                className={`${lora.className} text-white text-center text-3xl font-medium mb-2 drop-shadow-lg`}
               >
                 {post.heading}
               </p>
               <p
-                className={`${lora.className} text-black text-center text-base line-clamp-2 font-medium mb-2`}
+                className={`${lora.className} text-gray-200 text-center text-base line-clamp-2 font-medium mb-2 drop-shadow-md`}
               >
                 {post.description}
               </p>
+              </div>
 
-              <div className="relative h-full bg-neutral-100 dark:bg-neutral-800">
+              <div className="relative h-full w-full bg-muted">
                 <img
                   src={post.featuredImage}
                   alt={post.heading}

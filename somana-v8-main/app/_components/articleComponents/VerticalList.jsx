@@ -43,24 +43,24 @@ const VerticalList = ({ genre }) => {
               <Link
                 href={`/story/${post.slug}`}
                 key={post._id}
-                className="bg-white overflow-hidden"
+                className="bg-card hover:bg-card/80 transition-colors overflow-hidden rounded-lg group"
               >
-                <div className="relative h-32 bg-neutral-100 dark:bg-neutral-800">
+                <div className="relative h-32 bg-muted">
                   <img
                     src={post.featuredImage}
                     alt={post.heading}
-                    className="w-full h-full object-cover rounded"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-                <div className="flex gap-2 mt-1.5">
-                  <p className="text-xs bg-gray-100 px-2 rounded-sm border border-neutral-300 dark:border-neutral-600 w-fit text-neutral-700 dark:text-neutral-300">
+                <div className="flex gap-2 mt-2 px-1">
+                  <p className="text-xs bg-secondary px-2 py-0.5 rounded-md border border-border text-muted-foreground">
                     {post.genre}
                   </p>
-                  <p className="text-xs px-2 rounded-sm border border-neutral-300 dark:border-neutral-600 w-fit text-neutral-700 dark:text-neutral-300">
+                  <p className="text-xs px-2 py-0.5 rounded-md border border-border text-muted-foreground">
                     {post.tags}
                   </p>
                 </div>
-                <p className={`${lora.className} text-black font-medium mt-1`}>
+                <p className={`${lora.className} text-card-foreground font-medium mt-2 px-1 line-clamp-2 group-hover:text-primary transition-colors`}>
                   {post.heading}
                 </p>
               </Link>

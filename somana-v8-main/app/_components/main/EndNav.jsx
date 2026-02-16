@@ -27,7 +27,7 @@ const EndNav = async ({ session }) => {
               <PenSquare size={16} />
             </Link> */}
             <Link href="/upload">
-              <Button variant="outline" className="cursor-pointer" size="sm">
+              <Button variant="outline" className="cursor-pointer transition-all duration-300 ease-in-out hover:scale-105 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md hover:border-blue-300 transform" size="sm">
                 Upload
               </Button>
             </Link>
@@ -46,7 +46,7 @@ const EndNav = async ({ session }) => {
           <Separator orientation="vertical" />
           <Link
             href="/login"
-            className="text-stone-200 text-sm bg-stone-800 p-1.5 px-3 rounded-full"
+            className="text-stone-200 text-sm bg-stone-800 p-1.5 px-3 rounded-full transition-all duration-300 ease-in-out hover:scale-105 hover:bg-stone-700 hover:shadow-md transform"
           >
             Login
           </Link>

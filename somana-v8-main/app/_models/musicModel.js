@@ -41,6 +41,10 @@ const musicSchema = new mongoose.Schema(
       type: String,
       default: "Not defined by artist",
     },
+    viewsCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     toJSON: { virtuals: true },

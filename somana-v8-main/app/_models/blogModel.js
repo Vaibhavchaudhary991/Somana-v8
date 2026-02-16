@@ -45,8 +45,15 @@ const blogSchema = new mongoose.Schema(
     ],
     tags: {
       type: String,
-      minlength: [2, "Tag is not valid."],
-      maxlength: [60, "Tag must have less than 60 characters."],
+      trim: true,
+      default: "",
+      validate: {
+        validator: function(v) {
+          // Allow empty string or validate length if provided
+          return !v || (v.length >= 2 && v.length <= 60);
+        },
+        message: "Tag must be between 2 and 60 characters if provided.",
+      },
     },
     genre: {
       type: String,
@@ -102,12 +109,19 @@ blogSchema.pre(/^find/, function (next) {
 });
 
 blogSchema.pre("save", function (next) {
-  const s = this.heading.split(" ").join("-").toLowerCase();
-  const id = this._id;
-  const u = `${s.substring(0, 40)}-${id}`;
-  const m = u.replace(/[^a-zA-Z0-9-]/g, "");
-  this.slug = m;
-  next();
+  try {
+    if (!this.heading || typeof this.heading !== "string") {
+      return next(new Error("Heading is required and must be a string"));
+    }
+    const s = this.heading.trim().split(" ").join("-").toLowerCase();
+    const id = this._id || this.id || Date.now().toString();
+    const u = `${s.substring(0, 40)}-${id}`;
+    const m = u.replace(/[^a-zA-Z0-9-]/g, "");
+    this.slug = m;
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 blogSchema.virtual("readTime").get(function () {

@@ -107,7 +107,7 @@ const Contact = () => {
               required
             />
           </div>
-          <Button type="submit" disabled={loading} className="w-full">
+          <Button type="submit" disabled={loading} className="w-full transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md transform">
             {loading ? "Sending..." : "Send Message"}
           </Button>
           {submitted && (

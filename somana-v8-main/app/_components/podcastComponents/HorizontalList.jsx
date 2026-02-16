@@ -52,26 +52,26 @@ const HorizontalList = () => {
                 title={podcast.podcastName}
                 description={podcast.description}
                 trigger={
-                  <div className="flex items-center gap-4 cursor-pointer">
-                    <div className="min-w-[72px] min-h-[72px] w-16 h-16 relative overflow-hidden rounded bg-neutral-100 dark:bg-neutral-800">
+                  <div className="flex items-center gap-4 cursor-pointer group">
+                    <div className="min-w-[72px] min-h-[72px] w-16 h-16 relative overflow-hidden rounded-lg bg-muted shadow-md group-hover:shadow-primary/20 transition-all duration-300">
                       <img
                         src={podcast.featuredImage}
                         alt={podcast.podcastName}
-                        className="object-cover rounded w-full h-full"
+                        className="object-cover rounded-lg w-full h-full group-hover:scale-105 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                        <PlayCircle size={20} fill="true" color="white" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
+                        <PlayCircle size={24} className="text-white drop-shadow-md group-hover:scale-110 transition-transform" />
                       </div>
                     </div>
 
                     <div className="flex flex-col justify-center overflow-hidden">
-                      <div className="flex gap-2">
-                        <p className="text-xs  px-2 rounded-sm border border-neutral-300 dark:border-neutral-600 w-fit text-neutral-700 dark:text-neutral-300">
+                      <div className="flex gap-2 mb-1">
+                        <p className="text-[10px] uppercase tracking-wider font-bold text-primary">
                           {podcast.podcastType}
                         </p>
                       </div>
                       <p
-                        className={`${lora.className} text-sm font-medium text-black dark:text-white mt-1 line-clamp-2`}
+                        className={`${lora.className} text-sm font-medium text-foreground mt-1 line-clamp-2 group-hover:text-primary transition-colors`}
                       >
                         {podcast.podcastName}
                       </p>
