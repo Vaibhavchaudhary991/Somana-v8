@@ -89,18 +89,18 @@ const Page = async ({ params }) => {
     <div className="mt-44 flex flex-col items-center p-1">
       <div className="w-full max-w-[860px] flex flex-col items-center">
         {/* <VerticalAd /> */}
-        <p className="text-sm border w-fit rounded-full px-4 py-1.5 border-stone-600">
+        <p className="text-sm border w-fit rounded-full px-4 py-1.5 border-stone-600 dark:border-stone-400 dark:text-stone-300">
           {article?.genre}
         </p>
 
         <p
-          className={`${lora.className} mt-6 text-stone-800 text-center text-5xl font-medium tracking-tight w-full max-w-[600px] leading-tight`}
+          className={`${lora.className} mt-6 text-stone-800 dark:text-stone-200 text-center text-5xl font-medium tracking-tight w-full max-w-[600px] leading-tight`}
         >
           {article.heading}
         </p>
 
         <p
-          className={`${crimsonText.className} mt-2 text-black font-medium text-center text-xl tracking-tighter w-full max-w-[600px]`}
+          className={`${crimsonText.className} mt-2 text-black dark:text-stone-400 font-medium text-center text-xl tracking-tighter w-full max-w-[600px]`}
         >
           {article.description}
         </p>
@@ -112,7 +112,7 @@ const Page = async ({ params }) => {
               userId={session.user.userId}
             />
           ) : null}
-          <p className="font-medium  dark:bg-gray-800 p-1 px-2 rounded-md text-sm">
+          <p className="font-medium dark:bg-gray-800 dark:text-gray-300 p-1 px-2 rounded-md text-sm">
             {article.viewsCount} views
           </p>
 
@@ -140,7 +140,7 @@ const Page = async ({ params }) => {
               src={article.author?.photo}
               alt={article.author?.name}
             />
-            <p className="font-semibold text-sm mt-1">{article.author?.name}</p>
+            <p className="font-semibold text-sm mt-1 dark:text-stone-300">{article.author?.name}</p>
           </div>
         </Link>
         {article?.genre === "Notes" ? (
