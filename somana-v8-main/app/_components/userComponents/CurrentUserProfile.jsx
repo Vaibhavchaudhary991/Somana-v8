@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useUser } from "@/app/_context/UserContext";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -32,6 +33,9 @@ const fetchUserStats = async (userId) => {
 
 const CurrentUserProfile = ({ session }) => {
   const userId = session.user.userId;
+
+  // XP + level come from the global UserContext (single source of truth)
+  const { user: contextUser, loading: contextLoading } = useUser();
 
   const {
     data: user,
@@ -105,11 +109,15 @@ const CurrentUserProfile = ({ session }) => {
     totalPlays: 0,
   });
 
-  const [xpProgress, setXpProgress] = useState({
-    level: 1,
-    currentXP: 0,
-    maxXP: 500,
-  });
+  // XP constants — maxXP is the threshold per level (500 per level)
+  const XP_MAX = 500;
+
+  // Derive XP from the global context (no local state needed)
+  const xpProgress = {
+    level: contextUser?.level ?? null,
+    currentXP: contextUser?.xp ?? null,
+    maxXP: XP_MAX,
+  };
 
   // Count-up animation helper
   const animateCount = (start, end, duration, callback) => {
@@ -140,16 +148,12 @@ const CurrentUserProfile = ({ session }) => {
         setStats((prev) => ({ ...prev, totalPlays: val }));
       });
       
-      // Update XP progress
-      setXpProgress({
-        level: statsData.level || 1,
-        currentXP: statsData.xp || 0,
-        maxXP: 500,
-      });
+      // XP is sourced from UserContext — no update needed here
     }
   }, [statsData]);
 
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -233,6 +237,7 @@ const CurrentUserProfile = ({ session }) => {
   };
 
   const handleLogout = async () => {
+    setShowLogoutModal(false);
     try {
       await signOut({ callbackUrl: "/login" });
       toast.success("Logged out successfully! 👋");
@@ -269,7 +274,11 @@ const CurrentUserProfile = ({ session }) => {
   };
 
   const completionPercentage = calculateCompletion();
-  const xpPercentage = (xpProgress.currentXP / xpProgress.maxXP) * 100;
+  // Only compute percentage once XP has loaded (avoids 0/500 flash)
+  const xpLoaded = !contextLoading && xpProgress.currentXP !== null;
+  const xpPercentage = xpLoaded
+    ? (xpProgress.currentXP / xpProgress.maxXP) * 100
+    : 0;
 
   if (isLoading) {
     return (
@@ -368,19 +377,25 @@ const CurrentUserProfile = ({ session }) => {
             <div className="xp-section">
               <div className="level-badge">
                 <Award size={18} />
-                Level {xpProgress.level}
+                {contextLoading
+                  ? <span style={{ opacity: 0.5 }}>Level —</span>
+                  : `Level ${xpProgress.level}`}
               </div>
               <div className="xp-progress-container">
                 <div className="xp-label">
                   <span>XP Progress</span>
-                  <span>
-                    {xpProgress.currentXP} / {xpProgress.maxXP} XP
-                  </span>
+                  {contextLoading ? (
+                    <span className="skeleton-stat-value" style={{ width: 80, height: 14, display: "inline-block" }} />
+                  ) : (
+                    <span>
+                      {xpProgress.currentXP} / {xpProgress.maxXP} XP
+                    </span>
+                  )}
                 </div>
                 <div className="xp-bar-bg">
                   <div
                     className="xp-bar-fill"
-                    style={{ width: `${xpPercentage}%` }}
+                    style={{ width: `${xpPercentage}%`, transition: "width 0.8s ease" }}
                   ></div>
                 </div>
               </div>
@@ -828,14 +843,14 @@ const CurrentUserProfile = ({ session }) => {
           </div>
 
           {/* Logout Section */}
-          <div className="section-card mt-8 border-none bg-transparent !p-0">
+          <div className="flex justify-end mt-6 pt-6 border-t border-white/5">
             <button
               type="button"
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-red-500/20 active:scale-[0.98]"
+              onClick={() => setShowLogoutModal(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-red-400 border border-red-500/30 rounded-xl bg-red-500/5 hover:bg-red-500/15 hover:border-red-500/60 hover:text-red-300 transition-all duration-200 active:scale-[0.97]"
             >
-              <LogOut size={20} />
-              Logout
+              <LogOut size={15} />
+              Sign Out
             </button>
           </div>
         </form>
@@ -878,6 +893,49 @@ const CurrentUserProfile = ({ session }) => {
         userId={userId}
         onSuccess={handleAvatarUpdate}
       />
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)" }}
+          onClick={() => setShowLogoutModal(false)}
+        >
+          <div
+            className="relative w-full max-w-sm rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Icon */}
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 mx-auto mb-4">
+              <LogOut size={20} className="text-red-400" />
+            </div>
+
+            <h3 className="text-center text-base font-semibold text-white mb-1">
+              Sign out?
+            </h3>
+            <p className="text-center text-sm text-neutral-400 mb-6">
+              You will be redirected to the login page.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 py-2.5 text-sm font-medium rounded-xl border border-white/10 text-neutral-300 hover:bg-white/5 transition-all duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex-1 py-2.5 text-sm font-semibold rounded-xl bg-red-500 hover:bg-red-600 text-white transition-all duration-200 active:scale-[0.97]"
+              >
+                Yes, sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

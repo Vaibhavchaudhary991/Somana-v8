@@ -5,6 +5,8 @@ import Facebook from "next-auth/providers/facebook";
 import { createUser, getUser } from "./services";
 
 const authConfig = {
+  secret: process.env.AUTH_SECRET,
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
@@ -19,6 +21,9 @@ const authConfig = {
       clientSecret: process.env.AUTH_FACEBOOK_SECRET,
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
   // callback run before the signup process
   callbacks: {
     async signIn({ user, account, profile }) {
@@ -32,16 +37,21 @@ const authConfig = {
           });
         }
         return true;
-      } catch {
+      } catch (error) {
+        console.error("Sign-in error:", error);
         return false;
       }
     },
     async session({ session }) {
-      const guest = await getUser(session.user.email);
-      if (guest) {
-        session.user.userId = guest._id.toString();
-        session.user.photo = guest.photo;
-        session.user.role = guest.role;
+      try {
+        const guest = await getUser(session.user.email);
+        if (guest) {
+          session.user.userId = guest._id.toString();
+          session.user.photo = guest.photo;
+          session.user.role = guest.role;
+        }
+      } catch (error) {
+        console.error("Auth session callback error:", error);
       }
       return session;
     },

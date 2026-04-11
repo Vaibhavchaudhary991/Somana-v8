@@ -8,7 +8,7 @@ export async function getUser(email) {
     return user ? user : null;
   } catch (err) {
     console.error("Error getting user:", err);
-    throw new Error("Error getting user");
+    throw new Error(`Error getting user: ${err.message}`);
   }
 }
 

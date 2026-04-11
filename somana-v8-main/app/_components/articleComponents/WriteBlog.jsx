@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { 
-  SendIcon, 
+  SendIcon,   
   Sparkles, 
   Image as ImageIcon,
   FileText,
@@ -54,6 +54,7 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
   const [fileLinks, setFileLinks] = useState("");
   const [genre, setGenre] = useState("Blog");
   const [featuredImage, setFeaturedImage] = useState("");
+  const [pdfFile, setPdfFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [useAI, setUseAI] = useState(false);
   const [question, setQuestion] = useState("");
@@ -166,6 +167,26 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
       toast.error(`Failed to upload image: ${error.message || 'Unknown error'}`);
     }
   };
+  
+  const handlePdfChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      toast.error("Please upload a PDF file");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("File size must be less than 20MB");
+      e.target.value = "";
+      return;
+    }
+
+    setPdfFile(file);
+    toast.success("PDF attached successfully!");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -193,17 +214,22 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
         }
       }
 
-      const response = await axios.post("/api/v1/blogs", {
-        heading: heading.trim(),
-        description: description.trim(),
-        content,
-        featuredImage,
-        tags: tags || "", // Ensure tags is a string, not undefined
-        genre: genre || "Blog", // Ensure genre has a default value
-        fileLinks: fileLinks || "", // Ensure fileLinks is a string, not undefined
-        collectedImages: uploadedImageUrls, // Use correct field name
-        author: session.user.userId,
-      });
+      const formData = new FormData();
+      formData.append("heading", heading.trim());
+      formData.append("description", description.trim());
+      formData.append("content", content);
+      formData.append("featuredImage", featuredImage);
+      formData.append("tags", tags || "");
+      formData.append("genre", genre || "Blog");
+      formData.append("fileLinks", fileLinks || "");
+      formData.append("author", session.user.userId);
+      formData.append("collectedImages", JSON.stringify(uploadedImageUrls));
+
+      if (pdfFile) {
+        formData.append("pdfFile", pdfFile);
+      }
+
+      const response = await axios.post("/api/v1/blogs", formData);
 
       if (response.data.statusText === "success") {
         toast.success("Story published successfully!");
@@ -511,6 +537,31 @@ const WriteBlog = ({ supabaseURL, session, hostname }) => {
                       onChange={handleFileLinksChange}
                       placeholder="Drive, Office links..."
                     />
+                  </div>
+
+                  {/* PDF Upload */}
+                  <div>
+                    <Label className="text-sm mb-2">Upload PDF (Optional)</Label>
+                    <div className="flex items-center gap-2">
+                       <Input
+                         type="file"
+                         accept=".pdf"
+                         onChange={handlePdfChange}
+                         className="text-sm cursor-pointer"
+                       />
+                       {pdfFile && (
+                         <button
+                           type="button"
+                           onClick={() => setPdfFile(null)}
+                           className="p-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                         >
+                           <X className="w-4 h-4" />
+                         </button>
+                       )}
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Max size: 20MB (.pdf only)
+                    </p>
                   </div>
 
                   {/* Additional Images */}

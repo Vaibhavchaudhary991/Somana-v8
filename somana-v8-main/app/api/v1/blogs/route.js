@@ -4,6 +4,7 @@ import APIFeatures from "@/app/_utils/apiFeatures";
 import { updateUserXP } from "@/app/_utils/updateUserXP";
 import { XP_ACTIONS } from "@/app/_utils/xpSystem";
 import { NextResponse } from "next/server";
+import supabase from "@/app/_lib/supabase";
 
 export async function GET(request) {
   try {
@@ -51,27 +52,87 @@ export async function POST(request) {
     await connectMongoDB();
 
     let data;
-    try {
-      data = await request.json();
-    } catch (e) {
-      console.error("Error parsing request JSON:", e);
-      return NextResponse.json(
-        { statusText: "error", message: "Invalid JSON in request body" },
-        { status: 400 }
-      );
+    const contentType = request.headers.get("content-type") || "";
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      data = {};
+      
+      // Extract fields from formData
+      for (const [key, value] of formData.entries()) {
+        if (key === "pdfFile") continue; // Handle file separately
+        
+        // Handle special fields
+        if (key === "collectedImages") {
+          try {
+            data[key] = JSON.parse(value);
+          } catch (e) {
+            data[key] = [value];
+          }
+        } else {
+          data[key] = value;
+        }
+      }
+
+      // Handle PDF File upload
+      const pdfFile = formData.get("pdfFile");
+      if (pdfFile && pdfFile instanceof File && pdfFile.size > 0) {
+        // 1. Backend Validation
+        if (pdfFile.type !== "application/pdf") {
+          return NextResponse.json(
+            { statusText: "fail", message: "Only PDF files are allowed." },
+            { status: 400 }
+          );
+        }
+        if (pdfFile.size > 20 * 1024 * 1024) { // 20MB
+          return NextResponse.json(
+            { statusText: "fail", message: "PDF size must be under 20MB." },
+            { status: 400 }
+          );
+        }
+
+        // 2. Upload to Supabase
+        const fileName = `pdfs/${Date.now()}-${pdfFile.name.replace(/\s+/g, "_")}`;
+        const { error: uploadError } = await supabase.storage
+          .from("story-images")
+          .upload(fileName, pdfFile);
+
+        if (uploadError) {
+          console.error("PDF upload error:", uploadError);
+          return NextResponse.json(
+            { statusText: "error", message: "Failed to upload PDF to storage." },
+            { status: 500 }
+          );
+        }
+
+        // 3. Set PDF URL
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        data.pdfFile = `${supabaseUrl}/storage/v1/object/public/story-images/${fileName}`;
+      }
+    } else {
+      try {
+        data = await request.json();
+      } catch (e) {
+        console.error("Error parsing request JSON:", e);
+        return NextResponse.json(
+          { statusText: "error", message: "Invalid JSON in request body" },
+          { status: 400 }
+        );
+      }
     }
 
-    console.log("Blog POST: Received data:", {
-      heading: data.heading?.substring(0, 50),
-      description: data.description?.substring(0, 50),
-      hasContent: !!data.content,
+    console.log("Blog POST: Processed data:", {
+      heading: data.heading,
+      description: data.description,
       author: data.author,
       genre: data.genre,
       tags: data.tags,
+      hasPdf: !!data.pdfFile,
     });
 
     // Ensure author is provided
     if (!data.author) {
+      console.log("Validation Failed: Author is missing");
       return NextResponse.json(
         {
           statusText: "fail",
@@ -84,11 +145,12 @@ export async function POST(request) {
     // Map 'images' field to 'collectedImages' if present
     if (data.images && !data.collectedImages) {
       data.collectedImages = data.images;
-      delete data.images;
+      delete data.images;  
     }
 
     // Trim and validate required fields before creating
     if (!data.heading || typeof data.heading !== "string") {
+      console.log("Validation Failed: Heading missing or not a string", { heading: data.heading, type: typeof data.heading });
       return NextResponse.json(
         {
           statusText: "fail",
@@ -100,6 +162,7 @@ export async function POST(request) {
 
     data.heading = data.heading.trim();
     if (data.heading.length < 10) {
+      console.log("Validation Failed: Heading too short", { length: data.heading.length });
       return NextResponse.json(
         {
           statusText: "fail",
@@ -110,6 +173,7 @@ export async function POST(request) {
     }
 
     if (data.heading.length > 100) {
+      console.log("Validation Failed: Heading too long", { length: data.heading.length });
       return NextResponse.json(
         {
           statusText: "fail",
@@ -120,6 +184,7 @@ export async function POST(request) {
     }
 
     if (!data.description || typeof data.description !== "string") {
+      console.log("Validation Failed: Description missing or not a string", { description: data.description, type: typeof data.description });
       return NextResponse.json(
         {
           statusText: "fail",
@@ -131,6 +196,7 @@ export async function POST(request) {
 
     data.description = data.description.trim();
     if (data.description.length < 20) {
+      console.log("Validation Failed: Description too short", { length: data.description.length });
       return NextResponse.json(
         {
           statusText: "fail",

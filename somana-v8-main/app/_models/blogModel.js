@@ -43,6 +43,10 @@ const blogSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    pdfFile: {
+      type: String,
+      default: null,
+    },
     tags: {
       type: String,
       trim: true,
