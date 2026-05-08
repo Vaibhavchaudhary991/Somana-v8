@@ -44,8 +44,10 @@ pipeline {
                 echo 'Deploying Application...'
                 script {
                     if (isUnix()) {
+                        sh 'docker rm -f somana-app || true'
                         sh 'docker-compose up -d'
                     } else {
+                        bat 'docker rm -f somana-app >nul 2>&1 || exit 0'
                         bat 'docker-compose up -d'
                     }
                 }
