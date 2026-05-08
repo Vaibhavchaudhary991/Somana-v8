@@ -17,13 +17,13 @@ const page = () => {
           Join Somana Org.
         </p>
         <form action={signInAction}>
-          <button className="p-1.5 cursor-pointer px-5 font-medium rounded-full border bg-stone-50 flex items-center gap-2">
+          <button className="p-1.5 cursor-pointer px-5 font-medium rounded-full border bg-stone-50 text-stone-900 flex items-center gap-2 hover:bg-stone-200 transition-colors">
             <LogIn size={16} />
             Login with Google
           </button>
         </form>
         <form action={signInGithub}>
-          <button className="p-1.5 cursor-pointer px-5 font-medium rounded-full border bg-stone-50 flex items-center gap-2">
+          <button className="p-1.5 cursor-pointer px-5 font-medium rounded-full border bg-stone-50 text-stone-900 flex items-center gap-2 hover:bg-stone-200 transition-colors">
             <Github size={16} />
             Login with GitHub
           </button>
