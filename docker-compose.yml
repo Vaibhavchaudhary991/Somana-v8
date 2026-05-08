@@ -1,7 +1,7 @@
 services:
   app:
     build:
-      context: ./somana-v8-main
+      context: .
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_HOSTNAME: ${NEXT_PUBLIC_HOSTNAME}

@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
 
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-if (!GROQ_API_KEY) {
-  throw new Error("Please set the GROQ_API_KEY environment variable.");
-}
-
 const CATEGORIES = [
   "Technology",
   "Career",
@@ -21,6 +15,10 @@ const CATEGORIES = [
 
 export async function POST(request) {
   try {
+    const GROQ_API_KEY = process.env.GROQ_API_KEY;
+    if (!GROQ_API_KEY) {
+      throw new Error("Please set the GROQ_API_KEY environment variable.");
+    }
     const { topic } = await request.json();
     console.log("Professional Content Writer: Received topic:", topic);
 
