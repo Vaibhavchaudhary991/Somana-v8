@@ -1,10 +1,7 @@
 pipeline {
     agent any
 
-    // Ensure we don't hold onto workspaces
-    options {
-        cleanWs()
-    }
+
 
     stages {
         stage('Checkout') {
